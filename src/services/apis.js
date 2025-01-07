@@ -17,6 +17,8 @@ export const productEndpoints={
   ADD_COMBO_PRODUCT: BASE_URL + "/product/addComboProduct",
   DELETE_PRODUCT: BASE_URL + "/product/deleteProduct",
   DELETE_COMBO_PRODUCT: BASE_URL + "/product/deleteComboProduct",
+  GET_PRODUCT_BY_ID: BASE_URL + "/product/getProductById",
+  GET_COMBO_PRODUCT_BY_ID: BASE_URL + "/product/getComboProductById",
 }
 
 export const adminEndpoints={

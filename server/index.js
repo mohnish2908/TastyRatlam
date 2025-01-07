@@ -24,6 +24,7 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(cors({ origin: "*", credentials: true }));
 app.use(fileUpload({ useTempFiles: true, tempFileDir: "/tmp/" }));
+app.use(express.urlencoded({ extended: true }));
 
 // Serve static files
 app.use(express.static(path.join(__dirname, "public")));

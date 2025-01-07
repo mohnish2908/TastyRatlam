@@ -1,28 +1,36 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import { toast } from "react-hot-toast";
-import { deleteProduct } from "../services/operations/productAPI";
-import { deleteComboProduct } from "../services/operations/productAPI";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../slices/cartSlice";
 
 const Card = ({ data }) => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isAdmin } = useSelector((state) => state.admin);
-  const { name, description, images, pricePerWeight, price } = data;
+  const { name, description, images, pricePerWeight } = data;
 
-
+  const [selectedOption, setSelectedOption] = useState(
+    pricePerWeight && pricePerWeight.length > 0 ? pricePerWeight[0]._id : null
+  );
 
   // Function for adding product to cart (non-admin users)
-  const handleAddToCart = (id) => {
-    // Handle adding the product to cart logic
-    toast.success("Product added to cart");
+  const handleAddToCart = () => {
+    if (pricePerWeight && selectedOption) {
+      const selectedWeight = pricePerWeight.find(option => option._id === selectedOption);
+      dispatch(addToCart({ ...data, selectedOption, selectedWeight }));
+      toast.success("Product added to cart");
+    } else if (!pricePerWeight) {
+      dispatch(addToCart({ ...data }));
+      toast.success("Combo product added to cart");
+    } else {
+      toast.error("Please select a weight option");
+    }
   };
 
-  // Function for buying product (non-admin users)
-  const handleBuyNow = (id) => {
-    // Handle buying the product logic
-    toast.success("Proceeding to checkout");
-    navigate("/checkout");  // Redirect to checkout page
+  // Function for navigating to product detail page
+  const handleProductClick = (e) => {
+    e.stopPropagation(); // Prevent unintended clicks on dropdown triggering this
+    navigate(`/product/${data._id}`);
   };
 
   return (
@@ -30,42 +38,40 @@ const Card = ({ data }) => {
       <img
         src={images && images.length > 0 ? images[0] : "https://via.placeholder.com/150"}
         alt={name}
-        className="w-full h-48 object-cover"
+        className="w-full h-48 object-cover cursor-pointer"
+        onClick={handleProductClick}
       />
-      <div className="p-4">
+      <div className="p-4 cursor-pointer" onClick={handleProductClick}>
         <h2 className="text-lg font-semibold text-gray-800">{name}</h2>
         <p className="text-gray-600 text-sm mt-2">{description}</p>
-        {pricePerWeight ? (
-          <div className="mt-4 space-y-1">
-            {pricePerWeight.map((option) => (
-              <p key={option._id} className="text-sm text-gray-700">
-                {option.weightInGrams}g - ₹{option.price}
-              </p>
-            ))}
+        {pricePerWeight && (
+          <div className="mt-4" onClick={(e) => e.stopPropagation()}>
+            <label htmlFor="pricePerWeight" className="text-sm font-medium text-gray-700">
+              Select Weight:
+            </label>
+            <select
+              id="pricePerWeight"
+              className="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              value={selectedOption}
+              onChange={(e) => setSelectedOption(e.target.value)}
+            >
+              {pricePerWeight.map((option) => (
+                <option key={option._id} value={option._id}>
+                  {option.weightInGrams}g - ₹{option.price}
+                </option>
+              ))}
+            </select>
           </div>
-        ) : (
-          <p className="text-lg font-bold text-gray-900 mt-4">₹{price}</p>
         )}
       </div>
-
-      <>
-          <div className="p-4 bg-gray-100 border-t border-gray-200">
-            <button
-              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md"
-              onClick={() => handleAddToCart(data._id)}
-            >
-              Add to Cart
-            </button>
-          </div>
-          <div className="p-4 bg-gray-100 border-t border-gray-200">
-            <button
-              className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md"
-              onClick={() => handleBuyNow(data._id)}
-            >
-              Buy Now
-            </button>
-          </div>
-        </>
+      <div className="p-4 bg-gray-100 border-t border-gray-200">
+        <button
+          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md w-full"
+          onClick={handleAddToCart}
+        >
+          Add to Cart
+        </button>
+      </div>
     </div>
   );
 };

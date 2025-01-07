@@ -121,3 +121,26 @@ exports.deleteProduct = async (req, res) => {
     res.status(500).json({ error: "Unable to delete product" });
   }
 }
+
+exports.getProductById = async (req, res) => {
+  try {
+    console.log("req.body",req.body);
+    console.log("req.params",req.params);
+    const {id}  = req.params;
+
+    // Fetch product by ID from the database
+    const product = await Product.findById(id)
+    if(product === null){
+      return res.status(404).json({ error: "Product not found" });
+    }
+    // Respond with the retrieved product
+    res.status(200).json({
+      message: "Product retrieved successfully",
+      data: product,
+    });
+  }
+  catch (err) {
+    console.error("Error fetching product:", err);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+}

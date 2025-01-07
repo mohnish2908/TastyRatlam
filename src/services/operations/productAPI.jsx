@@ -2,7 +2,15 @@ import { apiConnector } from '../apiconnector';
 import { productEndpoints } from '../apis';
 import { toast } from 'react-hot-toast';
 
-const { GET_PRODUCTS, GET_COMBO_PRODUCTS,DELETE_COMBO_PRODUCT,DELETE_PRODUCT,ADD_PRODUCT,ADD_COMBO_PRODUCT } = productEndpoints;
+const { GET_PRODUCTS, 
+        GET_COMBO_PRODUCTS,
+        DELETE_COMBO_PRODUCT,
+        DELETE_PRODUCT,
+        ADD_PRODUCT,
+        ADD_COMBO_PRODUCT,
+        GET_COMBO_PRODUCT_BY_ID,
+        GET_PRODUCT_BY_ID,
+         } = productEndpoints;
 
 export const getAllProducts = async () => {
     try {
@@ -144,6 +152,31 @@ export const addComboProduct = async (name, description, heading, subHeadings, p
         toast.dismiss();
         toast.error(error.response?.data?.message || "Error adding combo product");
         console.error("Error:", error);
+        throw error;
+    }
+}
+
+export const getProductById = async (id) => {
+    try {
+      console.log("Fetching product details for ID:", id);
+      const response = await apiConnector("GET", `${GET_PRODUCT_BY_ID}/${id}`, null, null, null);
+      const data = await response.data;
+      return { data };
+    } catch (error) {
+      toast.error("Error fetching product details");
+      throw error;
+    }
+  };
+
+export const getComboProductById = async (id) => {
+    try {
+        // toast.loading("Fetching Combo Product...");
+        const response = await apiConnector("GET",`${GET_COMBO_PRODUCT_BY_ID}/${id}`,  null , null, null);
+        const data = await response.data;
+        // toast.dismiss();
+        return { data };
+    } catch (error) {
+        toast.error("Error fetching combo product details");
         throw error;
     }
 }

@@ -116,3 +116,24 @@ exports.deleteComboProduct = async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 }
+
+exports.getComboProductById = async (req, res) => {
+  try{
+    const {id}=req.params;
+
+    // Fetch combo product by ID from the database
+    const comboProduct = await ComboProduct.findById(id);
+    if (comboProduct === null) {
+      return res.status(404).json({ error: "Combo Product not found" });
+    }
+    // Respond with the retrieved combo product
+    return res.status(200).json({
+      message: "Combo Product retrieved successfully",
+      data: comboProduct,
+    });
+  }
+  catch(err){
+    console.error("Error fetching combo product:", err);
+    return res.status(500).json({ error: "Internal Server Error" });
+  } 
+} 
