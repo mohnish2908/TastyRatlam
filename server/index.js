@@ -33,10 +33,14 @@ app.use(express.static(path.join(__dirname, "public")));
 const authRoutes = require("./routes/User");
 const productRoutes = require("./routes/Product");
 const paymentRoutes = require("./routes/Payment");
+const couponRouter=require("./routes/Coupon");
+const orderRouter=require("./routes/Order");
 
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/product', productRoutes);
 app.use('/api/v1/payment', paymentRoutes);
+app.use('/api/v1/coupon',couponRouter);
+app.use('/api/v1/order',orderRouter);
 
 
 

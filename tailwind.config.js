@@ -2,10 +2,27 @@
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
+    extend: {
+      animation: {
+        "slide-left": "slide-left 0.5s ease-in-out",
+        "slide-right": "slide-right 0.5s ease-in-out",
+      },
+      keyframes: {
+        "slide-left": {
+          "0%": { transform: "translateX(100%)" },
+          "100%": { transform: "translateX(0)" },
+        },
+        "slide-right": {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(0)" },
+        },
+      },
+    },
     fontFamily: {
       inter: ["Inter", "sans-serif"],
       "edu-sa": ["Edu SA Beginner", "cursive"],
       mono: ["Roboto Mono", "monospace"],
+      assistant: ["Assistant", "sans-serif"], // Adding the Assistant font family
     },
     colors: {
       white: "#fff",
@@ -65,6 +82,17 @@ module.exports = {
         700: "#74403f",
         800: "#5c3233",
         900: "#422526",
+      },
+      yellow: {
+        100: "#fff9db", // Lightest yellow
+        200: "#fff3bf", // Slightly darker
+        300: "#ffec99", // Warm yellow
+        400: "#ffe066", // Bright yellow
+        500: "#facc15", // Standard yellow
+        600: "#d9a80b", // Darker yellow
+        700: "#b38607", // Rich yellow
+        800: "#8c6405", // Deep yellow
+        900: "#664203", // Darkest yellow
       },
     },
     extend: {

@@ -19,8 +19,30 @@ export const productEndpoints={
   DELETE_COMBO_PRODUCT: BASE_URL + "/product/deleteComboProduct",
   GET_PRODUCT_BY_ID: BASE_URL + "/product/getProductById",
   GET_COMBO_PRODUCT_BY_ID: BASE_URL + "/product/getComboProductById",
+  ADD_PRODUCT_REVIEW: BASE_URL + "/product/createRating",
+  GET_PRODUCT_REVIEW: BASE_URL + "/product/getReviews",
+}
+
+export const couponEndpoints={
+  ADD_COUPON: BASE_URL + "/coupon/createCoupon",
+  GET_COUPON: BASE_URL + "/coupon/getCoupon",
+  DEACTIVATE_COUPON: BASE_URL + "/coupon/deactivateCoupon",
+  GET_ALL_COUPONS: BASE_URL + "/coupon/getAllCoupons",
 }
 
 export const adminEndpoints={
 
+}
+
+export const clientEndpoints = {
+  PAYMENT_API: BASE_URL + "/payment/capturePayment",
+  PAYMENT_VERIFY_API: BASE_URL + "/payment/verifyPayment",
+  SEND_PAYMENT_SUCCESS_EMAIL_API: BASE_URL + "/payment/sendPaymentSuccessEmail",
+}
+
+export const orderEndpoints = {
+  GET_ALL_ORDER: BASE_URL + "/order/getOrder",
+  GET_ORDER_BY_USERID: BASE_URL + "/order/getOrderByUserId",
+  UPDATE_ORDER: BASE_URL + "/order/updateOrder",
+  GET_ORDER_BY_ID: BASE_URL + "/order/getOrderById",
 }

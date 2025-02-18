@@ -9,6 +9,10 @@ const {
   createAdmin,
 } = require("../controllers/Auth")
 
+const{
+  createCoupon,
+  deactivateCoupon
+}=require("../controllers/Coupon")
 
 // const { auth } = require("../middlewares/auth")
 
@@ -26,6 +30,19 @@ router.post("/login", login)
 
 router.post("/createAdmin", createAdmin)
 router.post("/adminlogin", adminLogin)
+
+
+
+//****************** coupon *************************/
+//************************************************* */
+
+router.post("/createCoupon", createCoupon)
+router.post("/deactivateCoupon", deactivateCoupon)
+
+//************************************************* */
+
+
+
 
 // Route for sending OTP to the user's email
 // router.post("/sendOTP", sendOTP)

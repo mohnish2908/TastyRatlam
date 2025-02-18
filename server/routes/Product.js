@@ -13,15 +13,27 @@ const{
     deleteComboProduct,
     getComboProductById,
 }=require('../controllers/ComboOffer')
-
+const{
+    createRating,
+    getAllRatingReview,
+}=require('../controllers/RatingAndReview')
+ 
 router.post("/addProduct",addProduct)
 router.get("/getAllProduct",getAllProducts)
-router.delete("/deleteProduct",deleteProduct)
+router.post("/deleteProduct",deleteProduct)
 router.get("/getProductById/:id",getProductById)
 
 router.post("/addComboProduct",addComboProduct)
 router.get("/getAllComboProduct",getAllComboProducts)
-router.delete("/deleteComboProduct",deleteComboProduct)
+router.post("/deleteComboProduct",deleteComboProduct)
 router.get("/getComboProductById/:id",getComboProductById)
+
+
+// ********************************************************************************************************
+//                                      Rating and Review
+// ********************************************************************************************************
+router.post("/createRating", createRating)
+router.get("/getReviews", getAllRatingReview)
+
 
 module.exports = router

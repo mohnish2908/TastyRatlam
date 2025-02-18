@@ -10,14 +10,16 @@ const { GET_PRODUCTS,
         ADD_COMBO_PRODUCT,
         GET_COMBO_PRODUCT_BY_ID,
         GET_PRODUCT_BY_ID,
+        ADD_PRODUCT_REVIEW,
+        GET_PRODUCT_REVIEW
          } = productEndpoints;
 
 export const getAllProducts = async () => {
     try {
-        toast.loading("Fetching Products...");
+        // toast.loading("Fetching Products...");
         const response = await apiConnector("GET", GET_PRODUCTS, null, null, null); // API call for products
         const data = await response.data; // Assuming the data comes directly as response.data
-        toast.dismiss(); // Dismiss the loading toast
+        // toast.dismiss(); // Dismiss the loading toast
         return { data }; // Return the data in the required format
     } catch (error) {
         toast.error("Error fetching products");
@@ -27,10 +29,10 @@ export const getAllProducts = async () => {
 
 export const getAllComboProducts = async () => {
     try {
-        toast.loading("Fetching Combo Products...");
+        // toast.loading("Fetching Combo Products...");
         const response = await apiConnector("GET", GET_COMBO_PRODUCTS, null, null, null); // API call for combo products
         const data = await response.data; // Assuming the data comes directly as response.data
-        toast.dismiss(); // Dismiss the loading toast
+        // toast.dismiss(); // Dismiss the loading toast
         return { data }; // Return the data in the required format
     } catch (error) {
         toast.error("Error fetching combo products");
@@ -42,9 +44,9 @@ export const deleteProduct = async (id) => {
     try {
         toast.loading("Deleting Product...");
         // Call the delete API function here
-        const response = await apiConnector("DELETE", DELETE_PRODUCT, {id}, null, null);
+        const response = await apiConnector("POST", DELETE_PRODUCT, {id}, null, null);
         toast.dismiss();
-        toast.success("Product deleted successfully");
+        toast.success("Product deactivate/activate successfully");
         return response;
     } catch (error) {
         console.error(error);
@@ -55,16 +57,17 @@ export const deleteComboProduct = async (id) => {
     try {
         toast.loading("Deleting Combo Product...");
         // Call the delete API function here
-        const response = await apiConnector("DELETE", DELETE_COMBO_PRODUCT, {id}, null, null);
+        console.log("Deleting Combo Product:", id);
+        const response = await apiConnector("POST", DELETE_COMBO_PRODUCT, {id}, null, null);
         toast.dismiss();
-        toast.success("Combo Product deleted successfully");
+        toast.success("Combo Product activate/deactivate successfully");
         return response;
     } catch (error) {
         console.error(error);
     }
 }
 
-export const addProduct = async (name, description, heading, subHeadings, pricePerWeight, images) => {
+export const addProduct = async (name, description, heading, subHeadings, pricePerWeight, images,) => {
     try {
         console.log("Adding Product:", name, description, heading, subHeadings, pricePerWeight, images);
 
@@ -117,25 +120,26 @@ export const addProduct = async (name, description, heading, subHeadings, priceP
 };
 
 
-export const addComboProduct = async (name, description, heading, subHeadings, price, images, products) => {
+export const addComboProduct = async (formData) => {
     try{
-        console.log("Adding Combo Product:", name, description, heading, subHeadings, price, images, products);
-        const formData = new FormData();
-        formData.append("name", name);
-        formData.append("description", description);
-        formData.append("heading", heading);
-        subHeadings.forEach((subHeading, index) => {
-            formData.append(`subHeadings[${index}]`, subHeading);
-        });
-        formData.append("price", price);
-        if(images && images.length > 0){
-            images.forEach((image, index) => {
-                formData.append("images", image);
-            });
-        }
-        products.forEach((product, index) => {
-            formData.append(`products[${index}]`, product);
-        });
+        // console.log("Adding Combo Product:", name, description, heading, subHeadings, price, images, products,weightInGrams);
+        console.log(formData)
+        // const formData = new FormData();
+        // formData.append("name", name);
+        // formData.append("description", description);
+        // formData.append("heading", heading);
+        // subHeadings.forEach((subHeading, index) => {
+        //     formData.append(`subHeadings[${index}]`, subHeading);
+        // });
+        // formData.append("price", price);
+        // if(images && images.length > 0){
+        //     images.forEach((image, index) => {
+        //         formData.append("images", image);
+        //     });
+        // }
+        // products.forEach((product, index) => {
+        //     formData.append(`products[${index}]`, product);
+        // });
         toast.loading("Adding Combo Product...");
         const response = await apiConnector(
             "POST",
@@ -178,5 +182,29 @@ export const getComboProductById = async (id) => {
     } catch (error) {
         toast.error("Error fetching combo product details");
         throw error;
+    }
+}
+
+export const createRating = async (productId, name, rating, title, review,comboProductId) => {
+    try {
+        // console.log("Creating Rating:", productId, name, rating, title, review,comboProductId);
+        const response = await apiConnector("POST", ADD_PRODUCT_REVIEW, { productId, name, rating, title, review,comboProductId }, null, null);
+        toast.success("Rating added successfully");
+        return response.data;
+    } catch (error) {
+        toast.error("Error adding rating");
+        throw error;
+    }
+}
+
+export const getAllReviews = async () => {
+    try{
+        const response = await apiConnector("GET", GET_PRODUCT_REVIEW, null, null, null);
+        const data = await response.data.data;
+        console.log("All Reviews:", data);
+        return { data };
+    }
+    catch(error){
+        console.log("Error:", error);
     }
 }

@@ -6,6 +6,11 @@ const comboProductSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    status:{
+      type: String,
+      enum: ["available", "unavailable"],
+      default: "available",
+    },
     description: {
       type: String,
       required: true,
@@ -13,6 +18,10 @@ const comboProductSchema = new mongoose.Schema(
     price: {
       type: Number,
       required: true,
+    },
+    weightInGrams: {
+          type: Number,
+          required: true,
     },
     heading: {
       type: String,
@@ -33,6 +42,12 @@ const comboProductSchema = new mongoose.Schema(
         type:String,
         required: true,
       },
+    ],
+    ratings: [
+          {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "RatingAndReview",
+          },
     ],
   },
   { timestamps: true }

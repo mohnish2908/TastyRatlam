@@ -1,26 +1,46 @@
-import {createSlice} from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
+    user:localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null,
     contactNumber: null,
     loading: false,
-    token: localStorage.getItem('token')? JSON.parse(localStorage.getItem('token')) : null,
+    token: localStorage.getItem('token') ? JSON.parse(localStorage.getItem('token')) : null,
+    redirectPath: '/',
 };
 
 const userSlice = createSlice({
-    name:'user',
+    name: 'user',
     initialState: initialState,
-    reducers:{
-          setContactNumber(state, value) {
-            state.signupData = value.payload;
-          },
-          setLoading(state, value) {
+    reducers: {
+        setUser(state, value) {
+            state.user = value.payload;
+            if (value.payload) {
+                localStorage.setItem('user', JSON.stringify(value.payload));
+            }
+            else {
+                localStorage.removeItem('user');
+            }
+        },
+        setContactNumber(state, value) {
+            state.contactNumber = value.payload;
+        },
+        setLoading(state, value) {
             state.loading = value.payload;
-          },
-          setToken(state, value) {
+        },
+        setToken(state, value) {
             state.token = value.payload;
-          },
+            if (value.payload) {
+                localStorage.setItem('token', JSON.stringify(value.payload));
+            }
+            else {
+                localStorage.removeItem('token');
+            }
+        },
+        setRedirectPath(state, value) {
+            state.redirectPath = value.payload;
+        },
     },
 });
 
-export const { setContactNumber, setLoading, setToken} = userSlice.actions;
-export default userSlice.reducer; 
+export const { setContactNumber, setLoading, setToken, setRedirectPath,setUser } = userSlice.actions;
+export default userSlice.reducer;

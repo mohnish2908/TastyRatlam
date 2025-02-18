@@ -13,7 +13,7 @@ exports.addComboProduct = async (req, res) => {
       
       console.log("req body of the combo product...",req.body);
       console.log("req files of the combo product...",req.files);
-      const {name,description,price,heading}=req.body;
+      const {name,description,price,heading,weightInGrams}=req.body;
       const products=[];
       const subHeading=[];
       for (let key in req.body) {
@@ -59,6 +59,7 @@ exports.addComboProduct = async (req, res) => {
         price,
         heading,
         subHeading,
+        weightInGrams,
         images: uploadedImages.map(image => image.secure_url), // Get the URLs of uploaded images
         products,
       });
@@ -80,7 +81,7 @@ exports.addComboProduct = async (req, res) => {
 exports.getAllComboProducts = async (req, res) => {
     try {
         // Fetch all combo products from the database
-        const comboProducts = await ComboProduct.find();
+        const comboProducts = await ComboProduct.find().populate("ratings");
 
         // Respond with the retrieved combo products
         res.status(200).json({
@@ -106,8 +107,11 @@ exports.deleteComboProduct = async (req, res) => {
     if (!comboProduct) {
       return res.status(404).json({ error: "Combo Product not found" });
     }
-    // Delete the combo product
-    await ComboProduct.findByIdAndDelete(id);
+    
+    comboProduct.status = comboProduct.status === "available" ? "unavailable" : "available";
+    // Save the updated combo product
+    await comboProduct.save();
+
     // Respond with success
     return res.status(200).json({ success: true });
   }
@@ -122,7 +126,7 @@ exports.getComboProductById = async (req, res) => {
     const {id}=req.params;
 
     // Fetch combo product by ID from the database
-    const comboProduct = await ComboProduct.findById(id);
+    const comboProduct = await ComboProduct.findById(id).populate("ratings");
     if (comboProduct === null) {
       return res.status(404).json({ error: "Combo Product not found" });
     }

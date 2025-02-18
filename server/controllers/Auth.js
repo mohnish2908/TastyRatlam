@@ -4,12 +4,13 @@ const OTP = require("../models/OTP");
 const jwt = require("jsonwebtoken");
 const otpGenerator = require("otp-generator");
 const Admin = require("../models/Admin");
+var unirest = require("unirest");
 require("dotenv").config();
 
 // Function to generate OTP
 exports.sendOTP = async (req, res) => {
   try {
-    console.log("req.body in sendotp:", req.body);
+    // console.log("req.body in sendotp:", req.body);
     const { contactNumber } = req.body;
 
     if (!contactNumber) {
@@ -33,30 +34,49 @@ exports.sendOTP = async (req, res) => {
       });
       result = await OTP.findOne({ otp });
     }
-    console.log("otppppppppppp:", otp);
+    console.log("Generated OTP:", otp);
+
     // Store OTP in DB
     await OTP.create({ contactNumber, otp });
 
-    // const user = await User.findOne({ contactNumber });
+    // Send OTP via SMS
 
-    // this is essential to send otp to the mobile number as sms
-    // await sendSMS(otp, contactNumber);
+    // var req = unirest("POST", "https://www.fast2sms.com/dev/bulkV2");
 
-    res.status(200).json({
-      success: true,
-      message: `OTP Sent Successfully`,
-      otp,
-    });
+    // req.headers({
+    //   "authorization": "aeQqRdsAZwgKxFL4Jk5Ivbf9nUHS301GjrVYMtT2iuE7N6h8Do9L4tr0ZagwnGqyhQ3xCd8AJVjWYuTI",
+    // });
+
+    // req.form({
+    //   "variables_values": otp,
+    //   "route": "otp",
+    //   "numbers": contactNumber,
+    // });
+
+    // req.end(function (response) {
+    //   if (response.error) {
+    //     console.error(response.error);
+    //     return res.status(500).json({ error: "Unable to send OTP via SMS." });
+    //   }
+
+    //   console.log(response.body);
+      res.status(200).json({
+        success: true,
+        message: "OTP Sent Successfully",
+        otp,
+      });
+      
+    // });
   } catch (err) {
     console.log(err);
-    return res.status(500).json({ error: "unable to sendotp" });
+    return res.status(500).json({ error: "Unable to send OTP." });
   }
 };
 
 exports.login = async (req, res) => {
   try {
     const { contactNumber, otp } = req.body;
-
+    console.log("login body", req.body);
     if (!contactNumber || !otp) {
       return res
         .status(400)
@@ -74,8 +94,8 @@ exports.login = async (req, res) => {
     }
 
     // Check if user exists
-    let user = await User.findOne({ contactNumber });
-
+    let user = await User.findOne({ contactNumber })
+    console.log("user", user);
     if (!user) {
       user = await User.create({ contactNumber });
     }

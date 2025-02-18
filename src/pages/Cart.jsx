@@ -9,6 +9,7 @@ const Cart = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const cart = useSelector((state) => state.cart.cart);
+  console.log("cart",cart)  
   const total = useSelector((state) => state.cart.total);
 
   const handleRemoveFromCart = (id, selectedOption) => {
@@ -62,7 +63,7 @@ const Cart = () => {
                     />
                     <div>
                       <h2 className="text-lg font-semibold text-gray-800">{item.name}</h2>
-                      <p className="text-gray-600 text-sm">{item.description}</p>
+                      {/* <p className="text-gray-600 text-sm">{item.description}</p> */}
                       {item.selectedWeight && (
                         <p className="text-gray-600 text-sm">Weight: {item.selectedWeight.weightInGrams}g</p>
                       )}

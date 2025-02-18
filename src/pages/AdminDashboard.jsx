@@ -1,20 +1,15 @@
 import React, { useEffect, useState } from "react";
-import NavBar from "../common/NavBar"; // Assuming you have a NavBar component
+import NavBar from "../common/NavBar";
 import {
   getAllComboProducts,
   getAllProducts,
-  deleteProduct,
   deleteComboProduct,
-  addComboProduct,
-  addProduct,
-} from "../services/operations/productAPI"; // API functions
-// import { Link } from "react-router-dom"; // For navigation
-import { logout } from "../services/operations/authAPI"; // For logout
-import { toast } from "react-hot-toast"; // For loading and error messages
-import { useSelector,useDispatch } from "react-redux";
-import { Link } from "react-router";
-import { useNavigate } from "react-router";
-
+  deleteProduct,
+} from "../services/operations/productAPI";
+import { toast } from "react-hot-toast";
+import { useSelector, useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { logout } from "../services/operations/authAPI";
 
 const AdminDashboard = () => {
   const [products, setProducts] = useState([]);
@@ -31,8 +26,8 @@ const AdminDashboard = () => {
         toast.loading("Fetching Products...");
         const response = await getAllProducts();
         setProducts(response.data.data);
-        toast.dismiss();
 
+        toast.dismiss();
         toast.loading("Fetching Combo Products...");
         const comboResponse = await getAllComboProducts();
         setComboProducts(comboResponse.data.data);
@@ -44,39 +39,44 @@ const AdminDashboard = () => {
         setLoading(false);
       }
     };
-
     fetchData();
   }, []);
 
-  const handleDeleteProduct = async (id) => {
+  const handleUpdateProductStatus = async (id, currentStatus) => {
     try {
-      toast.loading("Deleting Product...");
-      await deleteProduct(id);
-      setProducts((prev) => prev.filter((product) => product._id !== id));
-      toast.dismiss();
-      toast.success("Product deleted successfully");
-    } catch (error) {
-      console.error(error);
-      toast.error("Error deleting product");
-    }
-  };
-
-  const handleDeleteComboProduct = async (id) => {
-    try {
-      toast.loading("Deleting Combo Product...");
-      await deleteComboProduct(id);
-      setComboProducts((prev) =>
-        prev.filter((comboProduct) => comboProduct._id !== id)
+      const newStatus = currentStatus === "available" ? "unavailable" : "available";
+      toast.loading(`Updating Product Status to ${newStatus}...`);
+      await deleteProduct(id, newStatus);
+      setProducts((prev) =>
+        prev.map((product) =>
+          product._id === id ? { ...product, status: newStatus } : product
+        )
       );
       toast.dismiss();
-      toast.success("Combo Product deleted successfully");
+      toast.success(`Product marked as ${newStatus}`);
     } catch (error) {
       console.error(error);
-      toast.error("Error deleting combo product");
+      toast.error("Error updating product status");
     }
   };
 
-
+  const handleUpdateComboProductStatus = async (id, currentStatus) => {
+    try {
+      const newStatus = currentStatus === "available" ? "unavailable" : "available";
+      toast.loading(`Updating Combo Product Status to ${newStatus}...`);
+      await deleteComboProduct(id, newStatus);
+      setComboProducts((prev) =>
+        prev.map((comboProduct) =>
+          comboProduct._id === id ? { ...comboProduct, status: newStatus } : comboProduct
+        )
+      );
+      toast.dismiss();
+      toast.success(`Combo Product marked as ${newStatus}`);
+    } catch (error) {
+      console.error(error);
+      toast.error("Error updating combo product status");
+    }
+  };
 
   const handleLogout = () => {
     dispatch(logout(navigate));
@@ -96,90 +96,160 @@ const AdminDashboard = () => {
     );
   }
 
-  const renderProductCard = (product, isCombo = false) => {
-    const { _id, name, description, images, pricePerWeight, price } = product;
-    return (
-      <div
-        key={_id}
-        className="bg-white shadow-md rounded-lg overflow-hidden border border-gray-200"
-      >
-        <img
-          src={
-            images && images.length > 0
-              ? images[0]
-              : "https://via.placeholder.com/150"
-          }
-          alt={name}
-          className="w-full h-48 object-cover"
-        />
-        <div className="p-4">
-          <h2 className="text-lg font-semibold text-gray-800">{name}</h2>
-          <p className="text-gray-600 text-sm mt-2">{description}</p>
-          {pricePerWeight ? (
-            <div className="mt-4 space-y-1">
-              {pricePerWeight.map((option) => (
-                <p key={option._id} className="text-sm text-gray-700">
-                  {option.weightInGrams}g - ₹{option.price}
-                </p>
-              ))}
-            </div>
-          ) : (
-            <p className="text-lg font-bold text-gray-900 mt-4">₹{price}</p>
-          )}
-        </div>
-        {isAdmin && (
-          <div className="p-4 bg-gray-100 border-t border-gray-200">
-            <button
-              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md"
-              onClick={() =>
-                isCombo
-                  ? handleDeleteComboProduct(_id)
-                  : handleDeleteProduct(_id)
-              }
-            >
-              Delete
-            </button>
-          </div>
-        )}
-      </div>
-    );
-  };
 
   return (
     <div>
+      <NavBar />
       <div className="max-w-7xl mx-auto p-4 flex flex-col">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">Products</h1>
-        <button
-          className="bg-blue-100 text-black px-4 py-2 rounded-md"
-          onClick={handleLogout}
-        >
-          Logout
-        </button>
+        {/* Header Section - Stack vertically on mobile */}
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Products</h1>
+          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+            <button
+              className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm w-full sm:w-auto"
+              onClick={handleLogout}
+            >
+              Logout
+            </button>
+            <Link
+              to="/add-promo-code"
+              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm w-full sm:w-auto text-center"
+            >
+              Add Promo Code
+            </Link>
+            <Link
+              to="/order-admin"
+              className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md text-sm w-full sm:w-auto text-center"
+            >
+              Orders
+            </Link>
+          </div>
+        </div>
 
+        {/* Add Product Button - Full width on mobile */}
         <div className="p-4 bg-gray-100 border-t border-gray-200 mt-4">
           <Link
             to="/add-product"
-            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md"
-          >Add Product</Link>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {products.map((product) => renderProductCard(product))}
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm block w-full sm:w-auto text-center"
+          >
+            Add Product
+          </Link>
         </div>
 
-        <h1 className="text-3xl font-bold text-gray-800 mt-10 mb-6">
+        {/* Products Table - Horizontal scroll on mobile */}
+        <div className="overflow-x-auto">
+          <table className="min-w-full mt-6 bg-white border border-gray-200">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="py-2 px-4 border-b hidden sm:table-cell">Image</th>
+                <th className="py-2 px-4 border-b">Name</th>
+                <th className="py-2 px-4 border-b">Price</th>
+                <th className="py-2 px-4 border-b hidden sm:table-cell">Status</th>
+                <th className="py-2 px-4 border-b">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {products.map((product) => {
+                const { _id, name, pricePerWeight, price, status, images } = product;
+                return (
+                  <tr key={_id} className="border-b">
+                    <td className="py-2 px-4 hidden sm:table-cell">
+                      <img src={images[0]} alt={name} className="w-12 h-12 sm:w-16 sm:h-16 object-cover" />
+                    </td>
+                    <td className="py-2 px-4 text-sm sm:text-base">{name}</td>
+                    <td className="py-2 px-4 text-sm sm:text-base">
+                      {pricePerWeight
+                        ? <>
+                            <span className="sm:hidden">From ₹{Math.min(...pricePerWeight.map(p => p.price))}</span>
+                            <div className="hidden sm:block">
+                              {pricePerWeight.map((option) => (
+                                <div key={option._id}>
+                                  {option.weightInGrams}g - ₹{option.price}
+                                </div>
+                              ))}
+                            </div>
+                          </>
+                        : `₹${price}`}
+                    </td>
+                    <td className="py-2 px-4 hidden sm:table-cell">
+                      <span className={`${status === "available" ? "bg-green-200" : "bg-red-200"} px-2 py-1 rounded text-sm`}>
+                        {status.charAt(0).toUpperCase() + status.slice(1)}
+                      </span>
+                    </td>
+                    <td className="py-2 px-4">
+                      <button
+                        className={`${
+                          status === "available" ? "bg-red-500" : "bg-green-500"
+                        } hover:opacity-90 text-white px-3 py-1.5 rounded-md text-xs sm:text-sm`}
+                        onClick={() => handleUpdateProductStatus(_id, status)}
+                      >
+                        {status === "available" ? "Unavailable" : "Available"}
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Combo Products Section */}
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mt-8 mb-4">
           Combo Products
         </h1>
         
+        {/* Add Combo Product Button */}
         <div className="p-4 bg-gray-100 border-t border-gray-200">
-        <Link
+          <Link
             to="/add-combo-product"
-            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md"
-          >Add Combo Product</Link>
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm block w-full sm:w-auto text-center"
+          >
+            Add Combo Product
+          </Link>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {comboProducts.map((comboProduct) =>
-            renderProductCard(comboProduct, true)
-          )}
+
+        {/* Combo Products Table */}
+        <div className="overflow-x-auto">
+          <table className="min-w-full mt-4 bg-white border border-gray-200">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="py-2 px-4 border-b hidden sm:table-cell">Image</th>
+                <th className="py-2 px-4 border-b">Name</th>
+                <th className="py-2 px-4 border-b">Price</th>
+                <th className="py-2 px-4 border-b hidden sm:table-cell">Status</th>
+                <th className="py-2 px-4 border-b">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {comboProducts.map((comboProduct) => {
+                const { _id, name, price, status, images } = comboProduct;
+                return (
+                  <tr key={_id} className="border-b">
+                    <td className="py-2 px-4 hidden sm:table-cell">
+                      <img src={images[0]} alt={name} className="w-12 h-12 sm:w-16 sm:h-16 object-cover" />
+                    </td>
+                    <td className="py-2 px-4 text-sm sm:text-base">{name}</td>
+                    <td className="py-2 px-4 text-sm sm:text-base">₹{price}</td>
+                    <td className="py-2 px-4 hidden sm:table-cell">
+                      <span className={`${status === "available" ? "bg-green-200" : "bg-red-200"} px-2 py-1 rounded text-sm`}>
+                        {status.charAt(0).toUpperCase() + status.slice(1)}
+                      </span>
+                    </td>
+                    <td className="py-2 px-4">
+                      <button
+                        className={`${
+                          status === "available" ? "bg-red-500" : "bg-green-500"
+                        } hover:opacity-90 text-white px-3 py-1.5 rounded-md text-xs sm:text-sm`}
+                        onClick={() => handleUpdateComboProductStatus(_id, status)}
+                      >
+                        {status === "available" ? "Unavailable" : "Available"}
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

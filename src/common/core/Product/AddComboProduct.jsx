@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { toast } from "react-hot-toast"; 
+import { toast } from "react-hot-toast";
 import { addComboProduct } from "../../../services/operations/productAPI"; // Assuming you have an API function for adding combo products
 
 const AddComboProduct = () => {
@@ -10,6 +10,7 @@ const AddComboProduct = () => {
   const [price, setPrice] = useState("");
   const [images, setImages] = useState([]);
   const [products, setProducts] = useState([""]);
+  const [weightInGrams, setWeightInGrams] = useState("");
 
   const handleSubHeadingChange = (index, value) => {
     const updatedSubHeadings = [...subHeadings];
@@ -47,10 +48,26 @@ const AddComboProduct = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted", name, description, heading, subHeadings, price, images, products);
+    console.log("Form submitted", name, description, heading, subHeadings, price, images, products, weightInGrams);
+
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("description", description);
+    formData.append("heading", heading);
+    formData.append("price", price);
+    formData.append("weightInGrams", weightInGrams);
+    subHeadings.forEach((subHeading, index) => {
+      formData.append(`subHeadings[${index}]`, subHeading);
+    });
+    products.forEach((product, index) => {
+      formData.append(`products[${index}]`, product);
+    });
+    images.forEach((image) => {
+      formData.append("images", image);
+    });
 
     try {
-      const response = await addComboProduct(name, description, heading, subHeadings, price, images, products);
+      const response = await addComboProduct(formData);
       toast.success("Combo Product added successfully!");
       console.log("Combo Product added successfully", response.data);
     } catch (error) {
@@ -126,6 +143,17 @@ const AddComboProduct = () => {
           type="number"
           value={price}
           onChange={(e) => setPrice(e.target.value)}
+          required
+          className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <label className="block text-gray-700 font-semibold">Total Weight (in grams):</label>
+        <input
+          type="number"
+          value={weightInGrams}
+          onChange={(e) => setWeightInGrams(e.target.value)}
           required
           className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500"
         />

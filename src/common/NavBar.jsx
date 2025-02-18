@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { BsCart2 } from "react-icons/bs";
 import { FiMenu } from "react-icons/fi";
+import { IoPersonOutline } from "react-icons/io5";
 import { Link } from "react-router-dom"; // Import Link from react-router-dom
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -12,9 +13,8 @@ const NavBar = () => {
   return (
     <nav className="bg-white border-b shadow-sm">
       <div className="container mx-auto flex items-center justify-between px-4 py-2 md:px-6">
-
         {/* Center Section for desktop */}
-        <div className="hidden md:flex justify-center"> 
+        <div className="hidden md:flex justify-center">
           <img
             src="https://i.ibb.co/87jQjBs/logo.png"
             alt="Logo"
@@ -91,7 +91,7 @@ const NavBar = () => {
         </div>
 
         {/* Center Section for mobile */}
-        <div className="flex md:hidden justify-center"> 
+        <div className="flex md:hidden justify-center">
           <img
             src="https://i.ibb.co/87jQjBs/logo.png"
             alt="Logo"
@@ -100,15 +100,19 @@ const NavBar = () => {
         </div>
 
         {/* Right Section */}
-        <Link className="flex items-center" to="/cart">
-          <BsCart2 size={24} className="text-gray-700 cursor-pointer" />
-          {cart.length > 0 && (
-            <span className="ml-1 text-xs text-white bg-red-500 rounded-full px-1 translate-y-[-40%] translate-x-[-30%]">
-              {cart.length}
-            </span>
-          )}
-        </Link>
-
+        <div className='flex flex-row items-center gap-4'>
+          <Link to="/orders" className="flex items-center text-gray-700">
+            <IoPersonOutline size={24} className="cursor-pointer" />
+          </Link>
+          <Link className="flex items-center" to="/cart">
+            <BsCart2 size={24} className="text-gray-700 cursor-pointer" />
+            {cart.length > 0 && (
+              <span className="ml-1 text-xs text-white bg-red-500 rounded-full px-1 translate-y-[-40%] translate-x-[-30%]">
+                {cart.length}
+              </span>
+            )}
+          </Link>
+        </div>
       </div>
     </nav>
   );

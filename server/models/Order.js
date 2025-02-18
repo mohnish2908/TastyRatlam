@@ -9,13 +9,9 @@ const orderSchema = new mongoose.Schema(
     },
     products: [
       {
-        productId: {
+        product: {
           type: mongoose.Schema.Types.ObjectId,
           ref: "Product",
-          required: true,
-        },
-        name: {
-          type: String,
           required: true,
         },
         weightInGrams: {
@@ -31,41 +27,65 @@ const orderSchema = new mongoose.Schema(
           type: Number,
           required: true,
         },
-        total: {
-          type: Number,
-          required: true,
-        },
       },
     ],
-    totalAmount: {
+    coupon:{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Coupon",
+    },
+    price: {
       type: Number,
       required: true,
     },
-    shippingAddress: {
-      name: {
-        type: String,
-        required: true,
+    shippingCost: {
+      type: Number,
+      required: true,
+    },
+    totalWeight: {
+      type: Number,
+      required: true,
+    },
+    totalPrice: {
+      type: Number,
+      required: true,
+    },
+    firstName: {
+      type: String,
+      required: true,
+    },
+    lastName: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type:String,
+    },
+    address: {
+      type: String,
+      required: true,
+    },
+    landmark: {
+      type: String,
+    },
+    pincode: {
+      type: String,
+      required: true,
+      validate: {
+        validator: (value) => /^\d{6}$/.test(value),
+        message: "Pincode must be a 6-digit number.",
       },
-      address: {
-        type: String,
-        required: true,
-      },
-      pincode: {
-        type: String,
-        required: true,
-      },
-      city: {
-        type: String,
-        required: true,
-      },
-      state: {
-        type: String,
-        required: true,
-      },
-      phoneNumber: {
-        type: String,
-        required: true,
-      },
+    },
+    city: {
+      type: String,
+      required: true,
+    },
+    state: {
+      type: String,
+      required: true,
+    },
+    contactNumber: {
+      type: String,
+      required: true,
     },
     status: {
       type: String,
@@ -77,15 +97,29 @@ const orderSchema = new mongoose.Schema(
       enum: ["Pending", "Paid"],
       default: "Pending",
     },
+    trackingNumber:{
+      type: String,
+      default: "",
+    },
+    shippingCarrier:{
+      type: String,
+      default: "",
+    },
     orderDate: {
       type: Date,
       default: Date.now,
     },
-    deliveryDate: {
-      type: Date,
-    },
+    // deliveryDate: {
+    //   type: Date,
+    //   default: () => new Date(+new Date() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
+    // },
   },
   { timestamps: true }
 );
+
+// Indexes for Performance
+orderSchema.index({ user: 1 });
+orderSchema.index({ status: 1 });
+orderSchema.index({ paymentStatus: 1 });
 
 module.exports = mongoose.model("Order", orderSchema);

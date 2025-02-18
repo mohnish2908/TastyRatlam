@@ -6,6 +6,11 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    status:{
+      type: String,
+      enum: ["available", "unavailable"],
+      default: "available",
+    },
     description: {
       type: String,
       required: true,

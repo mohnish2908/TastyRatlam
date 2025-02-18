@@ -90,7 +90,7 @@ exports.addProduct = async (req, res) => {
 exports.getAllProducts = async (req, res) => {
   try {
     // Fetch all products from the database
-    const products = await Product.find();
+    const products = await Product.find().populate("ratings");
 
     // Respond with the retrieved products
     res.status(200).json({
@@ -113,7 +113,8 @@ exports.deleteProduct = async (req, res) => {
     if(!product){
       return res.status(404).json({ error: "Product not found" });
     }
-    await Product.findByIdAndDelete(id);
+    product.status = product.status === "available" ? "unavailable" : "available";
+    await product.save();
     res.status(200).json({ message: "Product deleted successfully" });
   }
   catch(err){
@@ -124,12 +125,13 @@ exports.deleteProduct = async (req, res) => {
 
 exports.getProductById = async (req, res) => {
   try {
-    console.log("req.body",req.body);
-    console.log("req.params",req.params);
+    // console.log("req.body",req.body);
+    // console.log("req.params",req.params);
+    // console.log("a")
     const {id}  = req.params;
 
     // Fetch product by ID from the database
-    const product = await Product.findById(id)
+    const product = await Product.findById(id).populate("ratings");
     if(product === null){
       return res.status(404).json({ error: "Product not found" });
     }
