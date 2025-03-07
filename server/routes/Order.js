@@ -1,6 +1,6 @@
 const express = require("express")
 const router = express.Router()
-
+const{auth,isAdmin}=require("../middlewares/auth")
 const{
     getOrder,
     getOrderByUserId,
@@ -10,7 +10,7 @@ const{
 
 router.post('/getOrder',getOrder)
 router.post('/getOrderByUserId',getOrderByUserId)
-router.post('/updateOrder',updateOrder)
+router.post('/updateOrder',auth,isAdmin,updateOrder)
 router.post('/getOrderById',getOrderById)
 
 

@@ -11,11 +11,13 @@ const{
 }=couponEndpoints;
 
 
-export const addCoupon = async (newCoupon) => {
+export const addCoupon = async (newCoupon,adminToken) => {
     try {
         // toast.loading("Adding Coupon...");
-        console.log("link",ADD_COUPON)
-        const response = await apiConnector("POST", ADD_COUPON, newCoupon, null, null);
+        console.log("link",adminToken)
+        const response = await apiConnector("POST", ADD_COUPON, newCoupon, {
+            Authorization:`Bearer ${adminToken}`,
+        }, null);
         // console.log("code, discountPercentage, condition, description", code, discountPercentage, condition, description);
         // const response = await apiConnector("POST", ADD_COUPON,{ code, discountPercentage, condition, description },null,null);
         // toast.dismiss();
@@ -41,10 +43,12 @@ export const getAllCoupon=async()=>{
     } 
 }
 
-export const action=async (id)=>{
+export const action=async (id,adminToken)=>{
     try{
         console.log("id apoi",id)
-        const response=await apiConnector("POST",DEACTIVATE_COUPON,{id},null,null);
+        console.log("token",adminToken.adminToken)
+        const response=await apiConnector("POST",DEACTIVATE_COUPON,{id},{
+            Authorization:`Bearer ${adminToken.adminToken}`},null);
         console.log("response",response)
         return response;
     }

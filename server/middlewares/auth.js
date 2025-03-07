@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 const User = require("../models/User");
-
+const Admin = require("../models/Admin");
 dotenv.config();
 
 exports.auth = async (req, res, next) => {
@@ -35,3 +35,17 @@ exports.auth = async (req, res, next) => {
     return res.status(401).json({ success: false, message: "Something went wrong while validating the token" });
   }
 };
+
+exports.isAdmin = async (req, res, next) => {
+  try{
+    const user = await Admin.findById(req.user.id);
+    if(!user){
+      return res.status(401).json({ success: false, message: "User not found" });
+    }
+    next();
+  }
+  catch(error){
+    // console.error("Authentication error:", error);
+    return res.status(500).json({ success: false, message: "User role can't be verified" });
+  }
+}

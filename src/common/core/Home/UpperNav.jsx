@@ -3,9 +3,9 @@ import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
 
 const UpperNav = () => {
     const arr = [
-        "Free Delivery on orders over ₹999 🚚",
         "Get 5% Discount on Minimum Purchase of 499 With Code 'SAVER5' 💰",
-        "Get a free pack of chili chips 🌶️ with any combo! Use code 'COMBO'."
+        "Get a free pack of chili chips 🌶️ with any combo! Use code 'COMBO'.",
+        "Free Delivery on orders over ₹999 🚚",
     ];
     const [index, setIndex] = useState(0);
     const [direction, setDirection] = useState('next'); // Track direction ('next' or 'prev')
@@ -28,18 +28,18 @@ const UpperNav = () => {
                 <IoIosArrowBack onClick={prev} className="cursor-pointer text-2xl sm:text-3xl text-black p-2" />
                 
                 {/* Sliding Text Container */}
-                <div className="overflow-hidden w-full relative flex-grow">
+                <div className="overflow-hidden w-full relative flex-grow ">
                     <div
                         className={`flex transition-transform duration-500 ease-in-out`}
                         style={{ transform: `translateX(-${index * 100}%)` }}
                     >
                         {arr.map((text, idx) => (
-                            <p
+                            <div
                                 key={idx}
-                                className="w-full text-center shrink-0 text-sm sm:text-base whitespace-normal py-2"
+                                className="w-full text-center shrink-0 text-sm sm:text-base whitespace-normal py-2 flex justify-center items-center"
                             >
                                 {text}
-                            </p>
+                            </div>
                         ))}
                     </div>
                 </div>

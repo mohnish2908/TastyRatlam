@@ -15,7 +15,7 @@ const AllRatings = () => {
       try {
         const response = await getAllReviews();
         setTotal(response.data.length);
-        const data = response.data.filter((r) => r.rating >= 4); // Filter reviews with rating >= 4
+        const data = response.data.filter((r) => r.rating >= 4).slice(0, 12); // Filter reviews with rating >= 4 and limit to 12
         setReviews(data);
       } catch (error) {
         toast.error("Error fetching product details");

@@ -3,7 +3,7 @@ exports.contactUsEmail = (
     firstname,
     lastname,
     message,
-    phoneNo,
+    contactNumber,
     countrycode
   ) => {
     return `<!DOCTYPE html>
@@ -74,7 +74,7 @@ exports.contactUsEmail = (
     
     <body>
         <div class="container">
-            <a href="https://imgbb.com/"><img src="https://i.ibb.co/MMLs2Tv/Frame-1.png" alt="HealthPlus Logo" border="0" class='logo'></a>
+            <a href="https://ibb.co/1YQn4j0K"><img src="https://ibb.co/1YQn4j0K" alt="" border="0" class='logo'></a>
             <div class="message">Contact Form Confirmation</div>
             <div class="body">
                 <p>Dear ${firstname} ${lastname},</p>
@@ -83,7 +83,7 @@ exports.contactUsEmail = (
                 <p>Here are the details you provided:</p>
                 <p>Name: ${firstname} ${lastname}</p>
                 <p>Email: ${email}</p>
-                <p>Phone Number: ${phoneNo}</p>
+                <p>Phone Number: ${contactNumber}</p>
                 <p>Message: ${message}</p>
                 <p>We appreciate your interest and will get back to you shortly. </p>
             </div>

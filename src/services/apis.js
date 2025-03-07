@@ -45,4 +45,5 @@ export const orderEndpoints = {
   GET_ORDER_BY_USERID: BASE_URL + "/order/getOrderByUserId",
   UPDATE_ORDER: BASE_URL + "/order/updateOrder",
   GET_ORDER_BY_ID: BASE_URL + "/order/getOrderById",
+  BULK_ORDER: BASE_URL + "/payment/bulkOrder",
 }

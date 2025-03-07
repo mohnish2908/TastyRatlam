@@ -20,6 +20,7 @@ export const getAllProducts = async () => {
         const response = await apiConnector("GET", GET_PRODUCTS, null, null, null); // API call for products
         const data = await response.data; // Assuming the data comes directly as response.data
         // toast.dismiss(); // Dismiss the loading toast
+        // console.log("all produdct",data)
         return { data }; // Return the data in the required format
     } catch (error) {
         toast.error("Error fetching products");
@@ -40,11 +41,13 @@ export const getAllComboProducts = async () => {
     }
 };
 
-export const deleteProduct = async (id) => {
+export const deleteProduct = async (id,newStatus,adminToken) => {
     try {
+        console.log("at",adminToken)
         toast.loading("Deleting Product...");
         // Call the delete API function here
-        const response = await apiConnector("POST", DELETE_PRODUCT, {id}, null, null);
+        const response = await apiConnector("POST", DELETE_PRODUCT, {id}, {
+            Authorization:`Bearer ${adminToken}`}, null);
         toast.dismiss();
         toast.success("Product deactivate/activate successfully");
         return response;
@@ -53,12 +56,13 @@ export const deleteProduct = async (id) => {
     }
 }
 
-export const deleteComboProduct = async (id) => {
+export const deleteComboProduct = async (id,newStatus,adminToken) => {
     try {
         toast.loading("Deleting Combo Product...");
         // Call the delete API function here
         console.log("Deleting Combo Product:", id);
-        const response = await apiConnector("POST", DELETE_COMBO_PRODUCT, {id}, null, null);
+        const response = await apiConnector("POST", DELETE_COMBO_PRODUCT, {id}, {
+            Authorization:`Bearer ${adminToken}`}, null);
         toast.dismiss();
         toast.success("Combo Product activate/deactivate successfully");
         return response;
@@ -67,9 +71,9 @@ export const deleteComboProduct = async (id) => {
     }
 }
 
-export const addProduct = async (name, description, heading, subHeadings, pricePerWeight, images,) => {
+export const addProduct = async (name, description, heading, subHeadings, pricePerWeight, images,adminToken) => {
     try {
-        console.log("Adding Product:", name, description, heading, subHeadings, pricePerWeight, images);
+        console.log("Adding Product:", name, description, heading, subHeadings, pricePerWeight, images,adminToken);
 
         // Create a FormData object to send form data including files
         const formData = new FormData();
@@ -104,7 +108,8 @@ export const addProduct = async (name, description, heading, subHeadings, priceP
             "POST",
             ADD_PRODUCT,
             formData,
-            null,  // No need to set Content-Type, it's handled by FormData
+            {
+                Authorization:`Bearer ${adminToken}`},  // No need to set Content-Type, it's handled by FormData
             null
         );
 
@@ -120,7 +125,7 @@ export const addProduct = async (name, description, heading, subHeadings, priceP
 };
 
 
-export const addComboProduct = async (formData) => {
+export const addComboProduct = async (formData,adminToken) => {
     try{
         // console.log("Adding Combo Product:", name, description, heading, subHeadings, price, images, products,weightInGrams);
         console.log(formData)
@@ -145,7 +150,9 @@ export const addComboProduct = async (formData) => {
             "POST",
             ADD_COMBO_PRODUCT,
             formData,
-            null,
+            {
+                Authorization:`Bearer ${adminToken}`
+            },
             null
         );
         toast.dismiss();

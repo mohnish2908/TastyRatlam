@@ -11,7 +11,12 @@ const orderSchema = new mongoose.Schema(
       {
         product: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: "Product",
+          refPath: "products.productModel", // Dynamic Reference
+          required: true,
+        },
+        productModel: {
+          type: String,
+          enum: ["Product", "ComboProduct"], // Allow both types
           required: true,
         },
         weightInGrams: {
@@ -29,7 +34,7 @@ const orderSchema = new mongoose.Schema(
         },
       },
     ],
-    coupon:{
+    coupon: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Coupon",
     },
@@ -58,7 +63,7 @@ const orderSchema = new mongoose.Schema(
       required: true,
     },
     email: {
-      type:String,
+      type: String,
     },
     address: {
       type: String,
@@ -90,18 +95,18 @@ const orderSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: ["Processing", "Shipped", "Delivered", "Cancelled"],
-      default: "Processing",
+      default: "Cancelled",
     },
     paymentStatus: {
       type: String,
       enum: ["Pending", "Paid"],
       default: "Pending",
     },
-    trackingNumber:{
+    trackingNumber: {
       type: String,
       default: "",
     },
-    shippingCarrier:{
+    shippingCarrier: {
       type: String,
       default: "",
     },
@@ -109,10 +114,6 @@ const orderSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
-    // deliveryDate: {
-    //   type: Date,
-    //   default: () => new Date(+new Date() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
-    // },
   },
   { timestamps: true }
 );

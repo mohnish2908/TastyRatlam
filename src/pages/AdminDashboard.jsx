@@ -10,8 +10,10 @@ import { toast } from "react-hot-toast";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { logout } from "../services/operations/authAPI";
-
+// import {useSelector} from 'react-redux'
 const AdminDashboard = () => {
+  const adminToken=useSelector(state=>state.admin.adminToken)
+  // console.log("adminToken",adminToken)
   const [products, setProducts] = useState([]);
   const [comboProducts, setComboProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -46,7 +48,7 @@ const AdminDashboard = () => {
     try {
       const newStatus = currentStatus === "available" ? "unavailable" : "available";
       toast.loading(`Updating Product Status to ${newStatus}...`);
-      await deleteProduct(id, newStatus);
+      await deleteProduct(id, newStatus,adminToken);
       setProducts((prev) =>
         prev.map((product) =>
           product._id === id ? { ...product, status: newStatus } : product
@@ -64,7 +66,7 @@ const AdminDashboard = () => {
     try {
       const newStatus = currentStatus === "available" ? "unavailable" : "available";
       toast.loading(`Updating Combo Product Status to ${newStatus}...`);
-      await deleteComboProduct(id, newStatus);
+      await deleteComboProduct(id, newStatus,adminToken);
       setComboProducts((prev) =>
         prev.map((comboProduct) =>
           comboProduct._id === id ? { ...comboProduct, status: newStatus } : comboProduct

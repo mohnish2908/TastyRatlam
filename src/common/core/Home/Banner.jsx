@@ -20,10 +20,10 @@ const Banner = () => {
     };
 
     return (
-        <div className="overflow-hidden w-full h-full">
+        <div className="overflow-hidden w-full h-full  relative">
             {/* Image Container */}
             <div
-                className="flex transition-transform duration-500 ease-in-out"
+                className="flex transition-transform duration-500 ease-in-out "
                 style={{ transform: `translateX(-${index * 100}%)` }}
             >
                 {images.map((image, idx) => (

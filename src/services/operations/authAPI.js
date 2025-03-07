@@ -2,7 +2,7 @@ import { apiConnector } from "../apiconnector";
 import { endpoints } from "../apis";
 import { toast } from "react-hot-toast";
 import { setLoading, setToken, setContactNumber,setUser } from "../../slices/userSlice";
-import { setAdmin, clearAdmin } from "../../slices/adminSlice";
+import { setAdmin, clearAdmin,setAdminToken } from "../../slices/adminSlice";
 
 const { SENDOTP_API, LOGIN_API, CREATE_ADMIN_API, ADMIN_LOGIN_API } = endpoints;
 
@@ -50,6 +50,7 @@ export function login(data) {
       dispatch(setToken(response.data.user.token));
       console.log("We aere from after login action", response.data.user.token);
       toast.success("Login Successfully");
+      localStorage.removeItem("contactNumber");
       return { payload: { success: true, token: response.data.user.token } };
     } catch (error) {
       console.log("LOGIN API ERROR............", error);
@@ -67,17 +68,18 @@ export function adminLogin(data, navigate) {
     const toastId = toast.loading("Logging In...");
     try {
       const response = await apiConnector("POST", ADMIN_LOGIN_API, data);
-      console.log("response", response);
+      console.log("admin login response", response);
 
       if (!response.data.success) {
         throw new Error(response.data.message);
       }
-      const { adminData } = response.data;
-
-      localStorage.setItem("isAdmin", JSON.stringify(true));
-      localStorage.setItem("adminData", JSON.stringify(adminData));
+      // const { adminData } = response.data;
+      const adminToken=response.data.admin.token;
+      // localStorage.setItem("", JSON.stringify(true));
+      localStorage.setItem("adminToken", JSON.stringify(adminToken));
       
-      dispatch(setAdmin({ isAdmin: true, adminData }));
+      dispatch(setAdmin({ isAdmin: true}));
+      dispatch(setAdminToken(adminToken));
       toast.success("Login Successfully");
       navigate("/admin-dashboard");
     } catch (error) {
@@ -93,6 +95,8 @@ export function logout(navigate) {
   return async (dispatch) => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    localStorage.removeItem("adminToken");
+    localStorage.removeItem("contactNumber");
     dispatch(setToken(null));
     dispatch(setContactNumber(null));
     dispatch(clearAdmin());

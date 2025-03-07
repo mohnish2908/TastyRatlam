@@ -12,6 +12,7 @@ const safeParse = (item) => {
     initialState: {
       isAdmin: safeParse(localStorage.getItem("isAdmin")) || false,
       adminData: safeParse(localStorage.getItem("adminData")) || null,
+      adminToken: localStorage.getItem('adminToken')? JSON.parse(localStorage.getItem('adminToken')) : null,
     },
     reducers: {
       setAdmin(state, action) {
@@ -30,9 +31,16 @@ const safeParse = (item) => {
         localStorage.removeItem("isAdmin");
         localStorage.removeItem("adminData");
       },
+      setAdminToken(state, value) {
+        state.adminToken = value.payload;
+        if (value.payload) {
+          localStorage.setItem('adminToken', JSON.stringify(value.payload));
+        }
+        localStorage.setItem("adminToken", JSON.stringify(state.adminToken));
+      },
     },
   });
   
-  export const { setAdmin, clearAdmin } = adminSlice.actions;
+  export const { setAdmin, clearAdmin,setAdminToken } = adminSlice.actions;
   export default adminSlice.reducer;
   

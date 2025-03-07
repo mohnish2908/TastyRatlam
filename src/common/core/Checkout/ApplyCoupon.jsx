@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
 import { getCoupon } from "../../../services/operations/couponAPI";
-
+// import {toast} from "react-hot-toast";
 const ApplyCoupon = ({ onApply, price }) => {
   const [couponCode, setCouponCode] = useState("");
 
   const handleApplyCoupon = async () => {
+    toast.loading("Applying coupon...");    
     try {
+
       const response = await getCoupon(couponCode);
 
       if (!response.data?.data?.condition) {
@@ -26,6 +28,9 @@ const ApplyCoupon = ({ onApply, price }) => {
       } else {
         console.error(err);
       }
+    }
+    finally{
+      toast.dismiss();
     }
   };
 

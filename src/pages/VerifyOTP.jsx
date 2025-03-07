@@ -1,15 +1,43 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { login } from '../services/operations/authAPI';
-import { setToken } from '../slices/userSlice';
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { login, sendOTP } from "../services/operations/authAPI";
+import { setToken } from "../slices/userSlice";
+import logo from "../assets/Logo_no_bg.png";
 
 const VerifyOTP = () => {
-  const { contactNumber, redirectPath } = useSelector((state) => state.auth);
-  const [otp, setOtp] = useState('');
-  const [error, setError] = useState('');
+  const { redirectPath } = useSelector((state) => state.auth);
+  const [otp, setOtp] = useState("");
+  const [error, setError] = useState("");
+  const [timer, setTimer] = useState(120); // 2 minutes timer
+  const [isResendDisabled, setIsResendDisabled] = useState(true);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const user = useSelector((state) => state.auth);
+  const contactNumber = useSelector((state) => state.auth.contactNumber);
+
+  useEffect(() => {
+    if (user?.token) {
+      navigate("/"); // Redirect to home if already logged in
+    }
+  }, [user, navigate]);
+
+  useEffect(() => {
+    let interval;
+    if (isResendDisabled) {
+      interval = setInterval(() => {
+        setTimer((prev) => {
+          if (prev <= 1) {
+            clearInterval(interval);
+            setIsResendDisabled(false);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [isResendDisabled]);
 
   const handleInputChange = (e) => {
     const value = e.target.value;
@@ -18,24 +46,35 @@ const VerifyOTP = () => {
     }
   };
 
+  const handleResendOTP = async (e) => {
+    e.preventDefault();
+    dispatch(sendOTP({ contactNumber }, navigate));
+    setIsResendDisabled(true);
+    setTimer(120);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (otp.length !== 6) {
-      setError('OTP must be 6 digits.');
+      setError("OTP must be 6 digits.");
     } else {
-      setError('');
+      setError("");
       try {
         const response = await dispatch(login({ otp, contactNumber }));
-        console.log("response of verify", response);
         if (response.payload.success) {
           dispatch(setToken(response.payload.token));
-          // console.log("redirectPath of verifyotp:", redirectPath);
-          navigate("/");
+          const pendingBuyNow = JSON.parse(localStorage.getItem("pendingBuyNow"));
+          if (pendingBuyNow) {
+            localStorage.removeItem("pendingBuyNow");
+            navigate(`/${pendingBuyNow.productType}/${pendingBuyNow.productId}`);
+          } else {
+            navigate(redirectPath || "/", { replace: true });
+          }
         } else {
-          setError('Invalid OTP. Please try again.');
+          setError("Invalid OTP. Please try again.");
         }
       } catch (error) {
-        setError('An error occurred. Please try again.');
+        setError("An error occurred. Please try again.");
       }
     }
   };
@@ -46,6 +85,7 @@ const VerifyOTP = () => {
         onSubmit={handleSubmit}
         className="bg-white p-8 rounded-lg shadow-md w-full max-w-md"
       >
+        <img src={logo} alt="Logo" className="h-16 w-auto mx-auto mb-4" />
         <h2 className="text-2xl font-bold text-gray-800 mb-6 text-center">
           Verify OTP
         </h2>
@@ -57,16 +97,27 @@ const VerifyOTP = () => {
             onChange={handleInputChange}
             placeholder="Enter the OTP"
             className={`mt-2 block w-full px-4 py-2 border ${
-              error ? 'border-red-500' : 'border-gray-300'
+              error ? "border-red-500" : "border-gray-300"
             } rounded-lg shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 text-gray-800`}
           />
         </label>
         {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white py-3 px-4 rounded-lg shadow hover:bg-indigo-600 transition duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-50"
+          className="w-full bg-black text-white py-3 px-4 rounded-lg shadow hover:bg-indigo-600 transition duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-opacity-50"
         >
           Verify OTP
+        </button>
+        <button
+          onClick={handleResendOTP}
+          disabled={isResendDisabled}
+          className={`w-full mt-4 py-3 px-4 rounded-lg shadow transition duration-200 focus:outline-none focus:ring-2 focus:ring-opacity-50 ${
+            isResendDisabled
+              ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+              : "bg-gray-500 text-white hover:bg-gray-600"
+          }`}
+        >
+          {isResendDisabled ? `Resend OTP in ${timer}s` : "Resend OTP"}
         </button>
       </form>
     </div>

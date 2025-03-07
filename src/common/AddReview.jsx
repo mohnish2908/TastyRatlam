@@ -23,13 +23,14 @@ const AddReview = ({ productId, comboProductId }) => {
     try {
       const response =await createRating(productId, name, rating, title, review, comboProductId);
       // console.log(response);
+      window.location.reload();
     } catch {
       console.log("Error adding review");
     }
   };
 
   return (
-    <div className="max-w-lg mx-auto p-6 bg-white shadow-md rounded-md">
+    <div className=" lg:w-1/2 mx-auto p-6 bg-white shadow-md rounded-md">
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && <p className="text-red-500">{error}</p>}
         <div>
@@ -65,6 +66,7 @@ const AddReview = ({ productId, comboProductId }) => {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+            maxLength="50"
             required
           />
         </div>
@@ -74,12 +76,13 @@ const AddReview = ({ productId, comboProductId }) => {
             value={review}
             onChange={(e) => setReview(e.target.value)}
             className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+            maxLength="250"
             required
           />
         </div>
         <button
           type="submit"
-          className="w-full py-2 px-4 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700"
+          className="w-full py-2 px-4 bg-yellow-500 text-white font-medium"
         >
           Submit
         </button>

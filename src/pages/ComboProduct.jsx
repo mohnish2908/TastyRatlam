@@ -6,7 +6,9 @@ import {
 } from "../services/operations/productAPI"; // API functions
 import { toast } from "react-hot-toast"; // For loading and error messages
 import Card from "../common/Card"; // Assuming you have a Card component
-
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import Footer from "../common/Footer";
 const ComboProduct = () => {
   const [products, setProducts] = useState([]);
   // const [comboProducts, setComboProducts] = useState([]);
@@ -16,15 +18,8 @@ const ComboProduct = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // toast.loading("Fetching Products...");
         const response = await getAllComboProducts();
         setProducts(response.data.data);
-        // toast.dismiss();
-
-        // toast.loading("Fetching Combo Products...");
-        // const comboResponse = await getAllComboProducts();
-        // setComboProducts(comboResponse.data.data);
-        // toast.dismiss();
       } catch (err) {
         setError("Error fetching products or combo products");
         toast.error("Error fetching data");
@@ -38,7 +33,35 @@ const ComboProduct = () => {
 
   if (loading) {
     return (
-      <div className="text-center py-10 text-lg font-semibold">Loading...</div>
+      <div>
+        <NavBar />
+        <div className="md:w-[85%] mx-auto p-4">
+          <h1 className="text-3xl font-bold text-gray-800 mb-6">
+            <Skeleton width={150} height={40} />
+          </h1>
+          <div className="flex flex-wrap gap-4">
+            {[...Array(5)].map((_, index) => (
+              <div 
+                key={index}
+                className="sm:w-full lg:w-1/5 md:w-1/2 p-2" // Adjusted responsive widths
+              >
+                <div className="border rounded-lg overflow-hidden shadow-sm">
+                  {/* Image Skeleton */}
+                  <Skeleton 
+                    height={300} 
+                    className="w-full aspect-square" 
+                  />
+                  
+                  {/* Text Skeleton */}
+                  <div className="p-3">
+                    <Skeleton width={120} height={20} />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
     );
   }
 
@@ -55,6 +78,7 @@ const ComboProduct = () => {
           ))}
         </div>
       </div>
+      <Footer />
     </div>
   );
 };

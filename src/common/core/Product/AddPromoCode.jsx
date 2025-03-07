@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from 'react';  
 import { addCoupon, getAllCoupon,action } from '../../../services/operations/couponAPI';  
-
+import { useSelector } from "react-redux";
 const AddPromoCode = () => {  
+    const adminToken = useSelector((state) => state.admin.adminToken);
     const [code, setCode] = useState('');  
     const [discountPercentage, setDiscountPercentage] = useState('');  
     const [condition, setCondition] = useState('');  
     const [description, setDescription] = useState('');  
     const [coupons, setCoupons] = useState([]);  
-
+    // console.log("admin token",adminToken)
     const handleSubmit = async (e) => {  
         e.preventDefault();  
         const newCoupon = { code, discountPercentage: Number(discountPercentage), condition: Number(condition), description, status: 'active' };  
 
         try {  
-            await addCoupon(newCoupon);  
+            await addCoupon(newCoupon,adminToken);  
             setCoupons([...coupons, newCoupon]); 
             setCode(''); setDiscountPercentage(''); setCondition(''); setDescription('');  
         } catch (error) {  
@@ -36,7 +37,7 @@ const AddPromoCode = () => {
     const toggleStatus =async (id) => {
         try{
             console.log("id f",id);
-            const r=await action(id);
+            const r=await action(id,{adminToken});
             const updatedCoupons = coupons.map(coupon => {
                 if(coupon._id === id) {
                     coupon.status = coupon.status === 'active' ? 'inactive' : 'active';

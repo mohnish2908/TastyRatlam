@@ -1,8 +1,9 @@
 import React, { useState } from "react";  
 import { toast } from "react-hot-toast";  
 import { addProduct } from "../../../services/operations/productAPI";  
-
+import { useSelector } from "react-redux";
 const AddProduct = () => {  
+  const adminToken = useSelector((state) => state.admin.adminToken);
   const [name, setName] = useState("");  
   const [description, setDescription] = useState("");  
   const [heading, setHeading] = useState("");  
@@ -50,9 +51,15 @@ const AddProduct = () => {
     
     try {  
       console.log("images in forntend", images);
-      const response = await addProduct(name, description, heading, subHeadings, pricePerWeight, images);  
+      const response = await addProduct(name, description, heading, subHeadings, pricePerWeight, images,adminToken);  
       toast.success("Product added successfully!"); // Success toast  
       console.log("Product added successfully", response.data);  
+      setName("");  
+      setDescription("");
+      setHeading("");
+      setSubHeadings([""]);
+      setPricePerWeight([{ weightInGrams: "", price: "" }]);
+      setImages([]);
     } catch (error) {  
       console.error("Error adding product", error);  
       toast.error("Error adding product!"); // Error toast  

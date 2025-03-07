@@ -14,7 +14,7 @@ const{
   orderPlacedEmail,
 }=require('../mail/templates/orderPlacedEmail')
 const{
-  contactFormRes,
+  contactUsEmail,
 }=require('../mail/templates/contactFormRes')
 
 
@@ -93,7 +93,7 @@ const OrderGenerator = async (formData) => {
       pincode,
       city,
       state,
-      product: products,
+      product,
       coupon,
       totalPrice,
       price,
@@ -102,11 +102,12 @@ const OrderGenerator = async (formData) => {
     } = formData;
 
     // Map products to the format expected by the Order schema
-    const formattedProducts = products.map((product) => ({
-      product: product._id, // Product ID
-      weightInGrams: product.weightInGrams,
-      quantity: product.quantity,
-      price: product.price,
+    const formattedProducts = product.map((p) => ({
+      product: p._id, // Product ID
+      weightInGrams: p.weightInGrams,
+      quantity: p.quantity,
+      price: p.price,
+      productModel: p.pricePerWeight ? "Product" : "ComboProduct",
     }));
 
     const couponId = coupon?._id || null;
@@ -395,14 +396,14 @@ exports.placeOrder = async (req, res) => {
   }
 };
 
-
 exports.bulkOrder = async (req, res) => {
   try{  
     const {email,firstName,lastName,contactNumber,message}=req.body;
+    console.log(email,email, firstName, lastName, message, contactNumber);
     await mailSender(
       email,
-      `Bulk Order`,
-      contactFormRes(
+      `Thanks For Contacting Us`,
+      contactUsEmail(
         email,
         firstName,
         lastName,
@@ -410,6 +411,19 @@ exports.bulkOrder = async (req, res) => {
         contactNumber
       )
     )
+    await mailSender(
+      'tastyratlam@gmail.com',
+      `Bulk Order`,
+      contactUsEmail(
+        email,
+        firstName,
+        lastName,
+        message,
+        contactNumber
+      )
+    )
+      
+
     res.status(200).json({success:true,message:"Email sent successfully"})
   }catch(error){
     console.log("Error in bulkOrder:",error);

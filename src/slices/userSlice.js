@@ -2,10 +2,10 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
     user:localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null,
-    contactNumber: null,
+    contactNumber: localStorage.getItem('contactNumber')? JSON.parse(localStorage.getItem('contactNumber')) : null,
     loading: false,
     token: localStorage.getItem('token') ? JSON.parse(localStorage.getItem('token')) : null,
-    redirectPath: '/',
+    redirectPath: null,
 };
 
 const userSlice = createSlice({
@@ -23,6 +23,9 @@ const userSlice = createSlice({
         },
         setContactNumber(state, value) {
             state.contactNumber = value.payload;
+            if(value.payload){
+                localStorage.setItem('contactNumber', JSON.stringify(value.payload));
+            }
         },
         setLoading(state, value) {
             state.loading = value.payload;

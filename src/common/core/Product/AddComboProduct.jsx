@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { toast } from "react-hot-toast";
 import { addComboProduct } from "../../../services/operations/productAPI"; // Assuming you have an API function for adding combo products
-
+import {useSelector} from 'react-redux'
+// import { set } from "mongoose";
 const AddComboProduct = () => {
+  const adminToken = useSelector(state => state.admin.adminToken)
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [heading, setHeading] = useState("");
@@ -67,9 +69,17 @@ const AddComboProduct = () => {
     });
 
     try {
-      const response = await addComboProduct(formData);
+      const response = await addComboProduct(formData,adminToken);
       toast.success("Combo Product added successfully!");
       console.log("Combo Product added successfully", response.data);
+      setName("");
+      setDescription("");
+      setHeading("");
+      setSubHeadings([""]);
+      setPrice("");
+      setImages([]);
+      setProducts([""]);
+      setWeightInGrams("");
     } catch (error) {
       console.error("Error adding combo product", error);
       toast.error("Error adding combo product!");

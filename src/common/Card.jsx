@@ -7,6 +7,7 @@ import GetAvgRating from "../utils/avgRating";
 import RatingStars from "./RatingStars";
 
 const Card = ({ data }) => {
+  // console.log("card data",data)
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { name, images, pricePerWeight, ratings } = data;
@@ -16,7 +17,8 @@ const Card = ({ data }) => {
   const [avgReviewCount, setAvgReviewCount] = useState(0);
 
   useEffect(() => {
-    const count = GetAvgRating(ratings);
+    const count = GetAvgRating(data?.ratings);
+    // console.log("ccoutn", count);
     setAvgReviewCount(count);
   }, [ratings]);
 
@@ -53,7 +55,7 @@ const Card = ({ data }) => {
   };
 
   return (
-    <div className="bg-white shadow-md border border-gray-200 rounded-lg overflow-hidden max-w-sm mx-auto h-[500px] flex flex-col">
+    <div className=" text-center cursor-pointer ">
       <img
         src={
           images && images.length > 0
@@ -61,38 +63,41 @@ const Card = ({ data }) => {
             : "https://via.placeholder.com/150"
         }
         alt={name}
-        className="object-cover cursor-pointer"
+        className=""
         onClick={handleProductClick}
       />
-      <div className="p-4 flex-grow flex flex-col justify-between">
+      <div className="">
         <div className="cursor-pointer" onClick={handleProductClick}>
-          <h2 className="text-lg font-semibold text-gray-800 text-center mb-2 line-clamp-2">
+          <div className='w-9/10 text-gray-800 text-sm'>
+          <h2 >
+           {/* className="lg:text-lg  text-gray-800 text-center sm:text-5sm" */}
             {name}
           </h2>
-          <div className="flex items-center justify-center mb-2">
-            <RatingStars reviewCount={avgReviewCount} />
-            <span className="ml-1 text-gray-600">({ratings.length})</span>
+          </div>
+          <div className="flex flex-row gap-1 justify-center items-center">
+            <RatingStars Review_Count={avgReviewCount} />
+            <span>({ratings.length})</span>
           </div>
         </div>
         {pricePerWeight && (
-          <div className="mt-4">
+          <div className="mt-4" onClick={(e) => e.stopPropagation()}>
             <select
               id="pricePerWeight"
-              className="w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              className="mt-1 block w-full text-center bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               value={selectedOption}
               onChange={(e) => setSelectedOption(e.target.value)}
             >
               {pricePerWeight.map((option) => (
-                <option key={option._id} value={option._id}>
+                <option key={option._id} value={option._id} >
                   {option.weightInGrams}g - ₹{option.price}
                 </option>
               ))}
             </select>
           </div>
         )}
-        <div className="mt-auto p-4 bg-gray-100 border-t border-gray-200">
+        <div className="py-2 bg-black text-white cursor-pointer mt-4">
           <button
-            className="bg-black text-white px-4 py-2  w-full transform transition-transform duration-200 hover:scale-105 hover:border hover:border-blue-500"
+            className="w-full transform transition-transform duration-200 hover:scale-105"
             onClick={handleAddToCart}
           >
             Add to Cart

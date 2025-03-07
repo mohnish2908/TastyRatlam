@@ -31,7 +31,7 @@ const StorySection = () => {
               authentic, spicy kick we were used to.
             </p>
             <p>
-              So, whenever <span className="underline font-bold">Pulkit</span> (left, in white) went back to Ratlam, I (
+              So, whenever <span className="underline font-bold"><a href="https://www.instagram.com/hey.pulkit/">Pulkit</a></span> (left, in white) went back to Ratlam, I (
               <span className="underline font-bold">Anuj</span>, right, also in white)
               eagerly awaited his return, knowing he’d bring our favorite namkeen along.
               Our friends there quickly got hooked too, asking, “Where can we get more of

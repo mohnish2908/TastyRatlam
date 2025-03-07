@@ -20,7 +20,9 @@ import CheckOut from "./pages/CheckOut";
 import OrderAdmin from '../src/common/core/OrderAdmin/OrderAdmin'
 import Order from "./pages/Order";
 import OrderDetail from './pages/OrderDetail'
-
+import OrderDetailAdmin from "./common/core/OrderAdmin/OrderDetailAdmin";
+import BulkOrder from "./pages/BulkOrder";
+import About from "./pages/About";
 function App() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -67,12 +69,18 @@ function App() {
             </AdminRoute>
           }
         />
+        <Route path='/order-admin/:id' element={
+            <AdminRoute>
+              <OrderDetailAdmin />
+            </AdminRoute>
+          } />
         <Route path="/products" element={<Product />} />
         <Route path="/combo-products" element={<ComboProduct />} />
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/combo-product/:id" element={<ComboProductDetail />} />
         <Route path="/order/:id" element={<OrderDetail />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path='/bulk-order' element={<BulkOrder />} />
         <Route
           path="/checkout"
           element={
@@ -92,6 +100,7 @@ function App() {
         <Route path="/login" element={<LoginUser />} />
         <Route path="/verify-otp" element={<VerifyOTP />} />
         <Route path="*" element={<Error />} />
+        <Route path='about' element={<About />} />
       </Routes>
     </div>
   );

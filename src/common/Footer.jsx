@@ -43,15 +43,15 @@ const Footer = () => {
 
       {/* Social Media Icons - Always Centered */}
       <div className="flex space-x-4 mt-8">
-        <a href="#" className="text-black text-2xl"><FaFacebook /></a>
-        <a href="#" className="text-black text-2xl"><BiLogoInstagramAlt /></a>
-        <a href="#" className="text-black text-2xl"><FaYoutube /></a>
+        <a href="https://www.facebook.com/people/Tasty-Ratlam/61569354040475/" className="text-black text-2xl"><FaFacebook /></a>
+        <a href="https://www.instagram.com/tastyratlam/" className="text-black text-2xl"><BiLogoInstagramAlt /></a>
+        <a href="https://www.youtube.com/@TastyRatlam" className="text-black text-2xl"><FaYoutube /></a>
       </div>
       
     </div>
     <div className='border-t border-gray-300 py-10 font-assistant'>
           <div className="flex flex-row items-center justify-center m-4 text-gray-600 text-2sm">
-              <p>© 2025, Tasty Ratlam Powered by Shopify</p>
+              <p>© 2025, Tasty Ratlam</p>
               <LuDot/>
               <p>Privacy Policy</p>
               <LuDot/>

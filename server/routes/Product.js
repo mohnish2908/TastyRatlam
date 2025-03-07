@@ -18,14 +18,18 @@ const{
     getAllRatingReview,
 }=require('../controllers/RatingAndReview')
  
-router.post("/addProduct",addProduct)
+const{
+    auth,isAdmin
+}=require('../middlewares/auth')
+
+router.post("/addProduct",auth,isAdmin,addProduct)
 router.get("/getAllProduct",getAllProducts)
-router.post("/deleteProduct",deleteProduct)
+router.post("/deleteProduct",auth,isAdmin,deleteProduct)
 router.get("/getProductById/:id",getProductById)
 
-router.post("/addComboProduct",addComboProduct)
+router.post("/addComboProduct",auth,isAdmin,addComboProduct)
 router.get("/getAllComboProduct",getAllComboProducts)
-router.post("/deleteComboProduct",deleteComboProduct)
+router.post("/deleteComboProduct",auth,isAdmin,deleteComboProduct)
 router.get("/getComboProductById/:id",getComboProductById)
 
 
